@@ -1,0 +1,66 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Global Technology Summits &amp; Conferences 2026 | ChronicleTech{% endblock %}
+
+{% block article %}
+<div class="page-container">
+    <header class="page-header">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-text">GLOBAL INDUSTRY CONFERENCES</span>
+        </div>
+        <h1 class="page-heading">Upcoming Technology Summits</h1>
+        <p class="page-lead">
+            Explore the flagship developer expos, hardware symposiums, and AI conferences convening global builders, researchers, and tech leaders throughout 2026.
+        </p>
+    </header>
+
+    <div class="events-summary-bar">
+        <span class="events-count-pill"><strong>{{ total_events }}</strong> Global Summits Scheduled</span>
+        <span class="events-timeframe">Calendar Year 2026</span>
+    </div>
+
+    <div class="events-grid">
+        {% for evt in events %}
+            <article class="event-card {% if evt.is_featured %}event-featured{% endif %}">
+                <div class="event-header-row">
+                    <span class="event-category-tag">{{ evt.category_tag }}</span>
+                    {% if evt.is_featured %}
+                        <span class="event-featured-flag">KEYNOTE SUMMIT</span>
+                    {% endif %}
+                </div>
+
+                <h3 class="event-title">{{ evt.title }}</h3>
+
+                <div class="event-meta-info">
+                    <div class="event-meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+                        <span>{{ evt.date_str }}</span>
+                    </div>
+                    <div class="event-meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <span>{{ evt.location }}</span>
+                    </div>
+                </div>
+
+                <p class="event-desc">{{ evt.description }}</p>
+
+                <div class="event-footer">
+                    {% if evt.external_link and evt.external_link != '#' %}
+                        <a href="{{ evt.external_link }}" target="_blank" rel="noopener noreferrer" class="event-link-btn">
+                            Official Site <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    {% else %}
+                        <span class="event-link-btn disabled">Details Coming Soon</span>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <p>No summits currently scheduled. Check back soon for new additions!</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

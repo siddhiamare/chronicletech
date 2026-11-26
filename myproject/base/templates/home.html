@@ -1,0 +1,163 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}ChronicleTech | Emerging Technology & Next-Gen Architecture{% endblock %}
+
+{% block article %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span class="badge-text">EMERGING TECH INTELLIGENCE &bull; 2026–2035</span>
+    </div>
+    <h1 class="hero-title">Beyond Today's Technology</h1>
+    <p class="hero-subtitle">
+        Investigating the paradigm shifts in cognitive memory assistants, sovereign personal data, self-healing hardware, and ambient invisible computing.
+    </p>
+</section>
+
+<!-- Active Filter / Search Banner -->
+{% if search_query or active_category %}
+<div class="active-filter-bar">
+    <div class="filter-status">
+        <span class="filter-label">Filtered by:</span>
+        {% if search_query %}
+            <span class="filter-chip">Query: <strong>"{{ search_query }}"</strong></span>
+        {% endif %}
+        {% if active_category %}
+            <span class="filter-chip">Category: <strong>{{ active_category.name }}</strong></span>
+        {% endif %}
+        <span class="results-count">({{ total_count }} article{{ total_count|pluralize }} found)</span>
+    </div>
+    <a href="{% url 'home' %}" class="clear-filter-btn">&times; Clear filters</a>
+</div>
+{% endif %}
+
+<!-- Category Pills Navigation -->
+<nav class="category-nav" aria-label="Article categories">
+    <a href="{% url 'home' %}" class="category-pill {% if not active_category and not search_query %}active{% endif %}">
+        All Dispatches
+    </a>
+    {% for cat in categories %}
+        <a href="{% url 'home' %}?category={{ cat.slug }}" class="category-pill {% if active_category.slug == cat.slug %}active{% endif %}">
+            {{ cat.name }}
+        </a>
+    {% endfor %}
+</nav>
+
+<!-- Featured Story Spotlight (Only shown on unfiltered page 1) -->
+{% if featured_article and not search_query and not active_category and page_obj.number == 1 %}
+<section class="featured-spotlight-wrapper" aria-label="Featured Story">
+    <article class="featured-card">
+        <div class="featured-image-col">
+            <img src="{% static featured_article.image_path %}" alt="{{ featured_article.title }}">
+            <span class="featured-badge">SPOTLIGHT</span>
+        </div>
+        <div class="featured-body-col">
+            <div class="meta-row">
+                {% if featured_article.category %}
+                    <span class="category-tag tag-{{ featured_article.category.badge_color }}">{{ featured_article.category.name }}</span>
+                {% endif %}
+                <span class="read-time-pill">{{ featured_article.read_time }} min read</span>
+                <span class="views-pill">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    {{ featured_article.views_count }} views
+                </span>
+            </div>
+            <h2 class="featured-title">
+                <a href="{% url 'read' featured_article.slug %}">{{ featured_article.title }}</a>
+            </h2>
+            <p class="featured-desc">{{ featured_article.short_desc }}</p>
+            <div class="featured-footer">
+                <div class="author-info">
+                    <div class="author-avatar">{{ featured_article.author|slice:":1" }}</div>
+                    <div class="author-meta">
+                        <span class="author-name">{{ featured_article.author }}</span>
+                        <span class="pub-date">{{ featured_article.published_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                <a href="{% url 'read' featured_article.slug %}" class="btn-primary">
+                    Read Analysis <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </article>
+</section>
+{% endif %}
+
+<!-- Main Articles Grid -->
+<section class="articles-section" aria-label="Articles list">
+    <div class="section-header">
+        <h2 class="section-heading">
+            {% if search_query %}Search Results{% elif active_category %}{{ active_category.name }}{% else %}Latest Dispatches{% endif %}
+        </h2>
+        <span class="section-subtext">Showing {{ page_obj.start_index|default:0 }}–{{ page_obj.end_index|default:0 }} of {{ total_count }} articles</span>
+    </div>
+
+    {% if page_obj %}
+        <div class="articles-grid">
+            {% for item in page_obj %}
+                <article class="article-card">
+                    <div class="card-image-box">
+                        <a href="{% url 'read' item.slug %}">
+                            <img src="{% static item.image_path %}" alt="{{ item.title }}" loading="lazy">
+                        </a>
+                        {% if item.category %}
+                            <span class="category-tag tag-{{ item.category.badge_color }}">{{ item.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="pub-date">{{ item.published_at|date:"M d, Y" }}</span>
+                            <span class="meta-dot">&bull;</span>
+                            <span class="read-time">{{ item.read_time }} min read</span>
+                        </div>
+                        <h3 class="card-title">
+                            <a href="{% url 'read' item.slug %}">{{ item.title }}</a>
+                        </h3>
+                        <p class="card-desc">{{ item.short_desc|truncatewords:22 }}</p>
+                        <div class="card-footer">
+                            <span class="author-name-sub">{{ item.author|truncatechars:26 }}</span>
+                            <a href="{% url 'read' item.slug %}" class="read-cta">
+                                Read <span class="arrow">&rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">&#128269;</div>
+            <h3>No articles found</h3>
+            <p>We couldn't find any articles matching your search criteria. Try a different keyword or reset filters.</p>
+            <a href="{% url 'home' %}" class="btn-primary">View All Articles</a>
+        </div>
+    {% endif %}
+
+    <!-- Pagination Controls -->
+    {% if page_obj.has_other_pages %}
+        <nav class="pagination-bar" aria-label="Pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="page-link prev-link">
+                    &larr; Previous
+                </a>
+            {% else %}
+                <span class="page-link disabled">&larr; Previous</span>
+            {% endif %}
+
+            <div class="page-indicator">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </div>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="page-link next-link">
+                    Next &rarr;
+                </a>
+            {% else %}
+                <span class="page-link disabled">Next &rarr;</span>
+            {% endif %}
+        </nav>
+    {% endif %}
+</section>
+{% endblock %}

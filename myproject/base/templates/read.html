@@ -1,0 +1,133 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} | ChronicleTech{% endblock %}
+
+{% block article %}
+<div class="read-page-wrapper">
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        {% if article.category %}
+            <a href="{% url 'home' %}?category={{ article.category.slug }}">{{ article.category.name }}</a>
+            <span class="breadcrumb-separator">/</span>
+        {% endif %}
+        <span class="breadcrumb-current">{{ article.title|truncatechars:40 }}</span>
+    </nav>
+
+    <!-- Main Article Article -->
+    <article class="article-detail-container">
+        <!-- Header Metadata -->
+        <header class="detail-header">
+            <div class="detail-meta-top">
+                {% if article.category %}
+                    <span class="category-tag tag-{{ article.category.badge_color }}">{{ article.category.name }}</span>
+                {% endif %}
+                <span class="read-time-pill">{{ article.read_time }} min read</span>
+                <span class="views-pill">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    {{ article.views_count }} views
+                </span>
+            </div>
+
+            <h1 class="detail-title">{{ article.title }}</h1>
+            
+            {% if article.short_desc %}
+                <p class="detail-lead">{{ article.short_desc }}</p>
+            {% endif %}
+
+            <div class="detail-author-row">
+                <div class="author-profile">
+                    <div class="author-avatar">{{ article.author|slice:":1" }}</div>
+                    <div>
+                        <div class="author-name">{{ article.author }}</div>
+                        <div class="pub-date">Published on {{ article.published_at|date:"F d, Y" }} &bull; NextGen Research</div>
+                    </div>
+                </div>
+
+                <!-- Action Share Buttons -->
+                <div class="detail-actions">
+                    <button class="action-btn" id="copyLinkBtn" title="Copy article link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+                        <span id="copyLinkText">Share</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Feature Hero Image -->
+        <div class="detail-hero-media">
+            <img src="{% static article.image_path %}" alt="{{ article.title }}" class="detail-hero-img">
+        </div>
+
+        <!-- Key Takeaways Callout Box -->
+        <div class="takeaways-box">
+            <div class="takeaways-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>Executive Summary & Impact</span>
+            </div>
+            <p>
+                As this architectural paradigm matures towards 2035, developers and systems engineers will transition away from traditional centralized capture mechanisms toward ambient, zero-knowledge, and self-restoring topologies.
+            </p>
+        </div>
+
+        <!-- Article Rich Content Body -->
+        <div class="detail-body-content">
+            {{ article.content|linebreaks }}
+        </div>
+
+        <!-- Author Bio Card -->
+        <div class="author-bio-card">
+            <div class="author-bio-avatar">{{ article.author|slice:":1" }}</div>
+            <div class="author-bio-info">
+                <h4>About {{ article.author }}</h4>
+                <p>Contributing Fellow at ChronicleTech Research. Specializing in emerging software architectures, distributed edge computing, and future human-technology interaction paradigms.</p>
+            </div>
+        </div>
+
+        <div class="back-nav-container">
+            <a href="{% url 'home' %}" class="back-link">&larr; Return to all dispatches</a>
+        </div>
+    </article>
+
+    <!-- Related Articles Grid -->
+    {% if related_articles %}
+    <section class="related-section">
+        <h3 class="related-heading">Related Dispatches</h3>
+        <div class="related-grid">
+            {% for item in related_articles %}
+                <article class="related-card">
+                    <a href="{% url 'read' item.slug %}" class="related-img-link">
+                        <img src="{% static item.image_path %}" alt="{{ item.title }}" loading="lazy">
+                    </a>
+                    <div class="related-card-body">
+                        {% if item.category %}
+                            <span class="category-tag tag-{{ item.category.badge_color }}">{{ item.category.name }}</span>
+                        {% endif %}
+                        <h4><a href="{% url 'read' item.slug %}">{{ item.title }}</a></h4>
+                        <span class="related-time">{{ item.read_time }} min read</span>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<script>
+    // Copy link handler
+    const copyBtn = document.getElementById('copyLinkBtn');
+    const copyText = document.getElementById('copyLinkText');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                copyText.textContent = 'Copied!';
+                setTimeout(() => { copyText.textContent = 'Share'; }, 2500);
+            }).catch(() => {
+                copyText.textContent = 'URL Ready';
+            });
+        });
+    }
+</script>
+{% endblock %}

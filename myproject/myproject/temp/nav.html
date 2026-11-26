@@ -1,0 +1,60 @@
+<header class="site-header">
+    <nav class="nav-container">
+        <!-- Logo Brand -->
+        <a href="{% url 'home' %}" class="nav-brand">
+            <span class="brand-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+                    <path d="M6 6h10"></path>
+                    <path d="M6 10h10"></path>
+                    <path d="M6 14h6"></path>
+                </svg>
+            </span>
+            <span class="brand-name">Chronicle<span class="brand-accent">Tech</span></span>
+        </a>
+
+        <!-- Search Bar -->
+        <form class="nav-search-form" action="{% url 'home' %}" method="get">
+            <div class="search-input-wrapper">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input 
+                    type="search" 
+                    name="q" 
+                    placeholder="Search articles, topics, AI..." 
+                    value="{{ search_query|default:'' }}" 
+                    autocomplete="off"
+                    aria-label="Search articles"
+                >
+            </div>
+        </form>
+
+        <!-- Navigation Links -->
+        <div class="nav-links" id="navLinks">
+            <a href="{% url 'home' %}" class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                Home
+            </a>
+            <a href="{% url 'news' %}" class="nav-item {% if request.resolver_match.url_name == 'news' %}active{% endif %}">
+                News
+            </a>
+            <a href="{% url 'events' %}" class="nav-item {% if request.resolver_match.url_name == 'events' %}active{% endif %}">
+                Events
+            </a>
+            <a href="{% url 'about' %}" class="nav-item {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                About
+            </a>
+            <a href="/admin/" target="_blank" rel="noopener" class="nav-item nav-admin-badge" title="Django Admin Panel">
+                Admin
+            </a>
+        </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button class="mobile-menu-btn" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+        </button>
+    </nav>
+</header>

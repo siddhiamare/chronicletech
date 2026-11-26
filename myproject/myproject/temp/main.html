@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ChronicleTech — Deep insights into emerging technologies, ambient computing, AI architectures, and future innovations.">
+    <title>{% block title %}ChronicleTech | Insights into Tomorrow's Technology{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=8">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Top Reading Progress Indicator (Detail pages) -->
+    <div id="scrollProgress" class="scroll-progress-bar" style="width: 0%;"></div>
+
+    <!-- Navigation Bar -->
+    {% include 'nav.html' %}
+
+    <!-- Main Content Container -->
+    <main class="site-main" id="main-content">
+        {% block article %}{% endblock %}
+    </main>
+
+    <!-- Professional Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span class="logo-text">Chronicle<span class="logo-accent">Tech</span></span>
+                </div>
+                <p class="footer-tagline">
+                    Documenting the frontiers of artificial intelligence, sovereign privacy, self-healing hardware, and ambient computing shaping the world by 2035.
+                </p>
+                <div class="footer-tech-stack">
+                    <span class="tech-tag">Python 3.12</span>
+                    <span class="tech-tag">Django 6</span>
+                    <span class="tech-tag">SQLite</span>
+                    <span class="tech-tag">Modern CSS3</span>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="{% url 'home' %}">Dispatches</a></li>
+                    <li><a href="{% url 'news' %}">Tech News</a></li>
+                    <li><a href="{% url 'events' %}">Global Summits</a></li>
+                    <li><a href="{% url 'about' %}">About Platform</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Explore Domains</h4>
+                <ul>
+                    <li><a href="{% url 'home' %}?category=artificial-intelligence">Artificial Intelligence</a></li>
+                    <li><a href="{% url 'home' %}?category=privacy-security">Privacy & Security</a></li>
+                    <li><a href="{% url 'home' %}?category=hardware-innovations">Hardware Innovations</a></li>
+                    <li><a href="{% url 'home' %}?category=ubiquitous-computing">Ubiquitous Computing</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column newsletter-col">
+                <h4>Stay Ahead of the Curve</h4>
+                <p>Receive bi-weekly deep dives into post-2030 technology breakthroughs.</p>
+                <form id="newsletterForm" class="footer-newsletter-form" action="{% url 'newsletter_subscribe' %}" method="post">
+                    {% csrf_token %}
+                    <div class="newsletter-input-group">
+                        <input type="email" name="email" id="newsletterEmail" placeholder="Enter your email..." required>
+                        <button type="submit" id="newsletterSubmitBtn" aria-label="Subscribe to newsletter">→</button>
+                    </div>
+                    <div id="newsletterMsg" class="newsletter-msg"></div>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 ChronicleTech Publications. Built with Django & clean software engineering principles.</p>
+            <div class="footer-bottom-links">
+                <a href="{% url 'about' %}">System Architecture</a>
+                <a href="/admin/" target="_blank" rel="noopener">Admin Portal</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Reading scroll progress bar for detail views
+        window.addEventListener('scroll', () => {
+            const progressBar = document.getElementById('scrollProgress');
+            if (progressBar) {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                if (totalHeight > 0) {
+                    const progress = (window.scrollY / totalHeight) * 100;
+                    progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+                }
+            }
+        });
+
+        // Mobile Navigation Toggle
+        const menuToggle = document.getElementById('mobileMenuToggle');
+        const navLinks = document.getElementById('navLinks');
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('nav-open');
+                menuToggle.setAttribute('aria-expanded', navLinks.classList.contains('nav-open'));
+            });
+        }
+
+        // Newsletter AJAX Subscription
+        const newsletterForm = document.getElementById('newsletterForm');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const emailInput = document.getElementById('newsletterEmail');
+                const msgBox = document.getElementById('newsletterMsg');
+                const csrfToken = newsletterForm.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                try {
+                    const formData = new FormData();
+                    formData.append('email', emailInput.value);
+
+                    const res = await fetch(newsletterForm.action, {
+                        method: 'POST',
+                        headers: { 'X-CSRFToken': csrfToken },
+                        body: formData
+                    });
+
+                    const data = await res.json();
+                    if (res.ok) {
+                        msgBox.textContent = data.message;
+                        msgBox.className = 'newsletter-msg success';
+                        emailInput.value = '';
+                    } else {
+                        msgBox.textContent = data.message || 'Subscription failed.';
+                        msgBox.className = 'newsletter-msg error';
+                    }
+                } catch (err) {
+                    msgBox.textContent = 'Network error. Please try again.';
+                    msgBox.className = 'newsletter-msg error';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
