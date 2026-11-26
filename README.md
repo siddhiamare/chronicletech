@@ -139,26 +139,6 @@ Visit **http://127.0.0.1:8000** in your browser.
 
 ---
 
-## Resume Bullet Points (Ready to Copy-Paste)
-
-You can feature this project on your resume under your **Projects** section:
-
-### Option A: Full-Stack / Python Developer Focus
-> **ChronicleTech &mdash; Full-Stack Tech Editorial Platform** | *Python, Django 6, REST APIs, In-Memory Caching, CSS3*
-> - Engineered a content publishing platform in Django 6 leveraging MVT architecture and Django ORM with relational models for articles, categories, and industry events.
-> - Integrated a **real-time live tech news wire** consuming external developer REST APIs with topic taxonomies (`AI`, `Python`, `Cloud`, `Cybersecurity`), in-memory caching (TTL 300s), and cache-busting.
-> - Implemented dynamic multi-field search and taxonomy filtering using complex `Q` expressions, accompanied by server-side pagination preserving query parameters.
-> - Built concurrency-safe view tracking utilizing Django `F()` expressions for atomic updates and created an internal JSON endpoint (`/api/live-news/`) for decoupled data retrieval.
-> - Developed an automated CLI command (`seed_data`) for deterministic database initialization and authored **17 unit/integration tests** with 100% pass rate.
-> - Designed a responsive dark mode design system with CSS Grid/Flexbox and zero third-party UI framework dependencies.
-
-### Option B: Backend Software Engineer Focus
-> **ChronicleTech &mdash; Scalable Content Management & Aggregator Engine** | *Python, Django 6, REST API Integration, Caching, Unit Testing*
-> - Designed normalized relational database schemas with custom migrations, foreign keys, and indexes for optimized query throughput.
-> - Architected a live news aggregator consuming external third-party REST endpoints, implementing **in-memory caching (`LocMemCache`) with 5-minute TTL** and network fault-tolerance fallbacks.
-> - Built resilient search querying using Django ORM `Q` objects and customized the Django Admin dashboard with search fields, prepopulated slugs, and filter facets.
-> - Implemented atomic counter increments with Django `F()` expressions to prevent race conditions during high-concurrency article view tracking.
-> - Enforced software reliability with **17 automated test cases** covering model integrity, HTTP status handling, live API endpoints, redirection logic, and edge-case query filtering.
 
 ---
 
